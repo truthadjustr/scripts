@@ -1,0 +1,11 @@
+dipls is a function
+dipls () 
+{ 
+    docker ps | sed 1d | while read x; do
+        nam=$(echo $x | tr ' ' '\n'|tail -1);
+        cid=$(echo $x | cut -d' ' -f1);
+        image=$(echo $x | cut -d' ' -f2);
+        cipaddr=$(docker inspect $cid | jq '.[0].NetworkSettings.Networks' | grep IPAddress | cut -d':' -f2|tr -d '",');
+        printf "%-20s %-20s %-20s %-20s\n" "$nam" "$cid" "$cipaddr" "$image";
+    done
+}
